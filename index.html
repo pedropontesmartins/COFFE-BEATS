@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COFFEE BEATS - Rhythm Heaven Suite</title>
+    <!-- Coffee Mug Favicon via SVG Data URI -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%%3E<text y=%22.9em%22 font-size=%2290%22>☕</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="w-screen h-screen flex flex-col items-center justify-between p-2 md:p-4 bg-[#0f172a]">
+
+    <!-- Top Simulated Browser URL Bar & Header Bar -->
+    <div class="w-full max-w-2xl flex flex-col space-y-1 mb-1">
+        <!-- URL Bar mockup -->
+        <div class="w-full bg-slate-800 border-2 border-slate-700 px-3 py-1 rounded-xl flex items-center space-x-2 text-xs code-font text-slate-300 shadow">
+            <span class="text-rose-400 font-bold">🔒</span>
+            <span class="bg-slate-900 px-2 py-0.5 rounded text-emerald-400 select-all border border-slate-700 flex-1 truncate">https://www.coffeebeats.com</span>
+            <span class="text-[10px] text-slate-400 hidden sm:inline">☕ Secure Rhythm Suite</span>
+        </div>
+
+        <header id="main-header" class="w-full flex justify-between items-center bg-white border-4 border-black p-2.5 md:p-3 rounded-2xl rh-shadow z-20">
+            <div class="flex items-center space-x-2.5">
+                <div id="header-icon" class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-amber-500 border-3 border-black flex items-center justify-center text-lg md:text-xl font-black shadow">☕</div>
+                <div>
+                    <h1 id="header-title" class="text-sm md:text-lg font-black text-black tracking-wide leading-none">COFFEE BEATS</h1>
+                    <p id="hud-subtitle" class="text-[10px] md:text-[11px] text-gray-500 font-bold">Rhythm Heaven Suite</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2 md:space-x-4">
+                <div class="text-right">
+                    <div class="text-[8px] md:text-[9px] uppercase font-black text-gray-400">Score</div>
+                    <div id="hud-score" class="text-sm md:text-lg font-black text-black code-font">0000</div>
+                </div>
+                <div class="text-right">
+                    <div class="text-[8px] md:text-[9px] uppercase font-black text-gray-400">Streak</div>
+                    <div id="hud-streak" class="text-sm md:text-lg font-black text-amber-600 code-font">0x</div>
+                </div>
+                <button data-action="return-menu" class="px-2.5 py-1 bg-gray-200 hover:bg-gray-300 border-2 border-black rounded-xl text-xs font-black text-black cursor-pointer shadow">MENU</button>
+            </div>
+        </header>
+    </div>
+
+    <!-- Main Game Viewport Container -->
+    <main id="viewport-container" class="w-full max-w-2xl aspect-[4/3] max-h-[52vh] bg-sky-300 border-4 border-black rounded-3xl rh-shadow relative overflow-hidden flex flex-col items-center justify-between p-4 md:p-6 z-10 transition-colors duration-500">
+        
+        <!-- Background Scenery & Moving Decor -->
+        <div class="absolute inset-0 pointer-events-none overflow-hidden">
+            <div class="absolute -top-12 -left-12 w-48 h-48 bg-white/25 rounded-full"></div>
+            <div class="absolute top-12 right-12 w-36 h-36 bg-white/25 rounded-full"></div>
+            <div id="bg-ground" class="absolute bottom-0 left-0 right-0 h-28 md:h-32 bg-amber-300 border-t-4 border-black transition-colors duration-500"></div>
+            <div id="moving-bg-decor" class="absolute inset-0 overflow-hidden"></div>
+        </div>
+
+        <!-- 1. MAIN MENU SCREEN -->
+        <div id="view-menu" class="absolute inset-0 bg-[#fde047] z-30 flex flex-col items-center justify-center p-6 text-center space-y-6">
+            <div class="space-y-1">
+                <span class="px-3 py-1 bg-black text-yellow-300 font-black text-xs rounded-full uppercase tracking-widest animate-pulse">☕ FUNKY RHYTHM SUITE ☕</span>
+                <h2 class="text-4xl md:text-6xl font-black funky-title tracking-tight mt-2">COFFEE BEATS</h2>
+                <p class="text-xs font-bold text-amber-950 mt-1">Tap to the groove, brew the ultimate cup!</p>
+            </div>
+
+            <!-- Main Menu Action Buttons -->
+            <div class="w-full max-w-xs space-y-3">
+                <button data-action="phase-select" class="w-full py-3.5 bg-emerald-400 hover:bg-emerald-300 border-4 border-black rounded-2xl font-black text-black text-lg rh-btn-shadow cursor-pointer flex items-center justify-center space-x-2">
+                    <span>▶️ PLAY GAME</span>
+                </button>
+                <button data-action="open-options" class="w-full py-3 bg-sky-400 hover:bg-sky-300 border-4 border-black rounded-2xl font-black text-black text-base rh-btn-shadow cursor-pointer">
+                    ⚙️ OPTIONS
+                </button>
+                <button data-action="prompt-leave" class="w-full py-2.5 bg-rose-400 hover:bg-rose-300 border-4 border-black rounded-2xl font-black text-white text-sm rh-btn-shadow cursor-pointer">
+                    🚪 LEAVE GAME
+                </button>
+            </div>
+        </div>
+
+        <!-- OPTIONS MODAL -->
+        <div id="modal-options" class="absolute inset-0 bg-black/70 z-50 flex items-center justify-center p-4 hidden">
+            <div class="bg-white border-4 border-black rounded-3xl p-6 max-w-sm w-full text-center space-y-4 rh-shadow pop-animation">
+                <div class="text-2xl font-black text-black">⚙️ GAME OPTIONS</div>
+                
+                <div class="space-y-3 text-left">
+                    <!-- Difficulty Selection -->
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-black text-black">Difficulty:</span>
+                        <div class="flex bg-gray-100 border-2 border-black rounded-xl overflow-hidden p-0.5 text-xs font-black text-black">
+                            <button data-action="set-difficulty" data-difficulty="easy" id="btn-diff-easy" class="px-2 py-0.5 rounded-lg bg-gray-200 cursor-pointer">Easy</button>
+                            <button data-action="set-difficulty" data-difficulty="medium" id="btn-diff-medium" class="px-2.5 py-0.5 rounded-lg bg-amber-400 cursor-pointer">Med</button>
+                            <button data-action="set-difficulty" data-difficulty="hard" id="btn-diff-hard" class="px-2 py-0.5 rounded-lg bg-gray-200 cursor-pointer">Hard</button>
+                        </div>
+                    </div>
+
+                    <!-- Audio Mode Toggle -->
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-black text-black">Audio Mode:</span>
+                        <button data-action="toggle-audio" id="btn-lame-toggle" class="px-3 py-1 bg-gray-100 border-2 border-black rounded-xl text-xs font-black text-black cursor-pointer shadow-sm">
+                            🔊 Normal Audio
+                        </button>
+                    </div>
+
+                    <!-- Video Quality Toggle -->
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-black text-black">Visual Details:</span>
+                        <button data-action="toggle-visuals" id="btn-video-toggle" class="px-3 py-1 bg-gray-100 border-2 border-black rounded-xl text-xs font-black text-black cursor-pointer shadow-sm">
+                            ✨ High Quality
+                        </button>
+                    </div>
+                </div>
+
+                <button data-action="close-options" class="w-full py-2 bg-amber-400 hover:bg-amber-300 border-3 border-black rounded-xl font-black text-black text-xs cursor-pointer shadow">
+                    SAVE & CLOSE
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. PHASE SELECT SCREEN (SEPARATED) -->
+        <div id="view-phaseselect" class="absolute inset-0 bg-[#fde047] z-30 flex flex-col items-center justify-start p-4 md:p-6 text-center space-y-3 overflow-y-auto hidden">
+            <div class="space-y-0.5 mt-1">
+                <span class="px-3 py-0.5 bg-black text-yellow-300 font-black text-[10px] rounded-full uppercase tracking-widest">STAGE SELECT</span>
+                <h2 class="text-2xl md:text-4xl font-black text-black tracking-tight mt-1">CHOOSE YOUR PHASE</h2>
+            </div>
+
+            <!-- Phase Selection Grid (5 Phases) -->
+            <div class="w-full max-w-md space-y-2 pb-2">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <button data-action="start-phase" data-phase="1" class="p-2.5 bg-amber-500 hover:bg-amber-400 border-4 border-black rounded-2xl flex items-center space-x-3 rh-btn-shadow text-left cursor-pointer group">
+                        <div class="w-9 h-9 bg-white border-3 border-black rounded-xl flex items-center justify-center text-xl group-hover:scale-110 transition-transform shadow">🤠</div>
+                        <div>
+                            <div class="text-[8px] font-black text-black/60 uppercase">Phase 1 • Joe</div>
+                            <div class="text-xs font-black text-black">Grind & Pour</div>
+                        </div>
+                    </button>
+
+                    <button data-action="start-phase" data-phase="2" class="p-2.5 bg-sky-400 hover:bg-sky-300 border-4 border-black rounded-2xl flex items-center space-x-3 rh-btn-shadow text-left cursor-pointer group">
+                        <div class="w-9 h-9 bg-white border-3 border-black rounded-xl flex items-center justify-center text-xl group-hover:scale-110 transition-transform shadow">🐻</div>
+                        <div>
+                            <div class="text-[8px] font-black text-black/60 uppercase">Phase 2 • Duke</div>
+                            <div class="text-xs font-black text-black">Bug Squish</div>
+                        </div>
+                    </button>
+
+                    <button data-action="start-phase" data-phase="3" class="p-2.5 bg-rose-400 hover:bg-rose-300 border-4 border-black rounded-2xl flex items-center space-x-3 rh-btn-shadow text-left cursor-pointer group">
+                        <div class="w-9 h-9 bg-white border-3 border-black rounded-xl flex items-center justify-center text-xl group-hover:scale-110 transition-transform shadow">🐱</div>
+                        <div>
+                            <div class="text-[8px] font-black text-black/60 uppercase">Phase 3 • Byte</div>
+                            <div class="text-xs font-black text-black">Sip & Ship</div>
+                        </div>
+                    </button>
+
+                    <button data-action="start-phase" data-phase="4" class="p-2.5 bg-purple-400 hover:bg-purple-300 border-4 border-black rounded-2xl flex items-center space-x-3 rh-btn-shadow text-left cursor-pointer group">
+                        <div class="w-9 h-9 bg-white border-3 border-black rounded-xl flex items-center justify-center text-xl group-hover:scale-110 transition-transform shadow">🦉</div>
+                        <div>
+                            <div class="text-[8px] font-black text-black/60 uppercase">Phase 4 • Moca</div>
+                            <div class="text-xs font-black text-black">Infinite Loop</div>
+                        </div>
+                    </button>
+                </div>
+
+                <button data-action="start-phase" data-phase="5" class="w-full p-2.5 bg-emerald-400 hover:bg-emerald-300 border-4 border-black rounded-2xl flex items-center justify-center space-x-3 rh-btn-shadow cursor-pointer group">
+                    <span class="text-2xl group-hover:scale-125 transition-transform">🚀</span>
+                    <div class="text-left">
+                        <div class="text-[8px] font-black text-black/60 uppercase">Phase 5 • Boss Finale</div>
+                        <div class="text-xs font-black text-black">Merge Conflict (Server Boss)</div>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Back to Menu Button -->
+            <div class="w-full max-w-md pb-2 flex justify-center">
+                <button data-action="return-menu" class="px-4 py-1.5 bg-gray-200 hover:bg-gray-300 border-3 border-black rounded-xl text-xs font-black text-black cursor-pointer shadow">
+                    ◀️ Back to Main Menu
+                </button>
+            </div>
+        </div>
+
+        <!-- LEAVE GAME CONFIRMATION MODAL -->
+        <div id="modal-leave" class="absolute inset-0 bg-black/70 z-50 flex items-center justify-center p-4 hidden">
+            <div class="bg-white border-4 border-black rounded-3xl p-6 max-w-xs w-full text-center space-y-4 rh-shadow pop-animation">
+                <div class="text-3xl">☕🥶</div>
+                <h3 class="text-lg font-black text-black">Leave Coffee Beats?</h3>
+                <p class="text-xs font-bold text-gray-600">Are you sure you want to leave? Your coffee will get cold!</p>
+                <div class="flex space-x-2 pt-2">
+                    <button data-action="close-leave-modal" class="flex-1 py-2 bg-gray-200 hover:bg-gray-300 border-3 border-black rounded-xl font-black text-black text-xs cursor-pointer shadow">
+                        Stay & Play
+                    </button>
+                    <button data-action="leave-game" class="flex-1 py-2 bg-rose-500 hover:bg-rose-400 border-3 border-black rounded-xl font-black text-white text-xs cursor-pointer shadow">
+                        Leave Now
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. ACTIVE GAMEPLAY STAGE -->
+        <div id="view-game" class="absolute inset-0 z-20 flex flex-col justify-between p-4 md:p-6 hidden">
+            
+            <!-- Top Announcer Banner -->
+            <div class="w-full flex justify-between items-center">
+                <div id="char-name-tag" class="px-2.5 py-1 bg-white border-3 border-black rounded-xl text-black font-black text-[11px] md:text-xs shadow-md">
+                    Joe the Barista
+                </div>
+                <div id="cue-banner" class="px-4 md:px-6 py-1.5 md:py-2 bg-white border-4 border-black rounded-2xl text-black font-black text-base md:text-xl shadow-[0_4px_0_#000] tracking-wider uppercase transform -rotate-1">
+                    A-ONE, A-TWO, BREW!
+                </div>
+                <div class="w-16"></div>
+            </div>
+
+            <!-- Central Character Stage & Moving Track -->
+            <div class="flex-1 flex flex-col items-center justify-center relative overflow-hidden">
+                
+                <!-- Moving Track Conveyor -->
+                <div class="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-24 md:h-28 conveyor-track border-y-4 border-black flex items-center px-4 overflow-hidden">
+                    <div id="track-objects" class="relative w-full h-full flex items-center"></div>
+                </div>
+
+                <!-- Detailed SVG Character Component -->
+                <div id="character-wrapper" class="relative flex flex-col items-center z-10 pointer-events-none">
+                    <div id="char-speech-bubble" class="absolute -top-14 bg-white border-3 border-black px-2.5 py-0.5 rounded-xl text-black font-black text-xs opacity-0 transition-opacity pop-animation shadow-md">
+                        BREW!
+                    </div>
+                    
+                    <!-- Character Graphic Container -->
+                    <div id="character-svg-container" class="w-28 h-28 md:w-32 md:h-32 flex items-center justify-center filter drop-shadow-[0_8px_0_rgba(0,0,0,0.4)]"></div>
+                </div>
+
+                <!-- Beat Indicator Ring -->
+                <div class="absolute bottom-1 flex flex-col items-center pointer-events-none">
+                    <div class="w-12 h-12 md:w-14 md:h-14 rounded-full border-4 border-black bg-white/40 flex items-center justify-center relative shadow">
+                        <div id="inner-ring" class="w-7 h-7 md:w-8 md:h-8 rounded-full border-3 border-black bg-amber-400 scale-100 transition-transform duration-75"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feedback Stamp Container -->
+            <div id="stamp-container" class="absolute inset-0 pointer-events-none flex items-center justify-center z-40"></div>
+
+            <!-- Bottom Action Input Button -->
+            <div class="w-full flex justify-center pb-1">
+                <button id="action-btn" data-action="action" class="w-full max-w-xs py-3.5 rounded-2xl bg-amber-500 border-4 border-black font-black text-black text-lg md:text-xl rh-btn-shadow active:scale-95 transition-transform cursor-pointer shadow">
+                    TAP / SPACEBAR
+                </button>
+            </div>
+        </div>
+
+        <!-- 4. RESULTS / EVALUATION SCREEN -->
+        <div id="view-results" class="absolute inset-0 bg-[#fde047] z-30 flex flex-col items-center justify-center p-6 md:p-8 text-center space-y-4 hidden">
+            <div class="space-y-1">
+                <span class="px-3 py-0.5 bg-black text-white font-black text-xs rounded-full uppercase">STAGE COMPLETED</span>
+                <h2 id="result-grade" class="text-3xl md:text-5xl font-black text-black">SUPERB! ☕</h2>
+                <p id="result-comment" class="text-xs md:text-sm font-bold text-amber-950">Absolute rhythm perfection!</p>
+            </div>
+            
+            <div class="w-full max-w-xs bg-white border-4 border-black rounded-2xl p-4 space-y-2 rh-shadow text-left">
+                <div class="flex justify-between font-bold text-black text-xs md:text-sm">
+                    <span>Phase:</span>
+                    <span id="res-phase" class="font-black">Grind & Pour</span>
+                </div>
+                <div class="flex justify-between font-bold text-black text-xs md:text-sm">
+                    <span>Difficulty:</span>
+                    <span id="res-diff" class="font-black uppercase">Medium</span>
+                </div>
+                <div class="flex justify-between font-bold text-black text-xs md:text-sm">
+                    <span>Final Score:</span>
+                    <span id="res-score" class="code-font font-black">0</span>
+                </div>
+                <div class="flex justify-between font-bold text-black text-xs md:text-sm">
+                    <span>Max Streak:</span>
+                    <span id="res-streak" class="code-font font-black">0x</span>
+                </div>
+                <div class="flex justify-between font-bold text-black text-xs md:text-sm">
+                    <span>Accuracy:</span>
+                    <span id="res-accuracy" class="code-font font-black">0%</span>
+                </div>
+            </div>
+
+            <div class="flex space-x-3">
+                <button data-action="phase-select" class="px-4 py-2 rounded-2xl bg-white hover:bg-gray-100 border-4 border-black font-black text-black text-xs md:text-sm rh-btn-shadow cursor-pointer">
+                    ◀️ Phase Select
+                </button>
+                <button data-action="restart-phase" class="px-4 py-2 rounded-2xl bg-cyan-400 hover:bg-cyan-300 border-4 border-black font-black text-black text-xs md:text-sm rh-btn-shadow cursor-pointer">
+                    🔄 Play Again
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer Guide -->
+    <footer class="w-full max-w-2xl flex justify-between items-center text-[11px] font-bold text-gray-400 px-2 mt-1">
+        <span>coffeebeats.com ©️ 2026</span>
+        <span>Space / Tap to Play 🔊</span>
+    </footer>
+
+    <script src="script.js" defer></script>
+</body>
+</html>
